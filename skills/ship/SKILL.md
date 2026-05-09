@@ -21,9 +21,15 @@ Then ask:
 
 > **Does this plan look correct?**
 > - Reply `yes` to proceed with implementation
-> - Describe any changes needed and I'll update the plan before implementing
+> - Describe any changes needed and the plan will be revised before implementing
 
-Do not proceed to Step 3 until the user explicitly approves.
+Do not proceed to Step 3 until the user explicitly says `yes`.
+
+If the user requests changes:
+1. Re-delegate to @planner with: `"$ARGUMENTS — revisions: <user feedback>"`
+2. Wait until @planner confirms the updated `.claude/plan.md` has been written
+3. Read the updated `.claude/plan.md` and present it to the user in full
+4. Ask again — repeat this loop until the user explicitly says `yes`
 
 ## Step 3 — Implement
 
