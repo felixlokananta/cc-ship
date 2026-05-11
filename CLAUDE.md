@@ -28,17 +28,13 @@ Each agent runs in its own context window so planning context never bleeds into 
 ```bash
 # Install (first time)
 git clone https://github.com/YOUR_HANDLE/cc-ship.git ~/.claude/cc-ship
-mkdir -p ~/.claude/agents ~/.claude/skills
-ln -s ~/.claude/cc-ship/agents/planner.md ~/.claude/agents/planner.md
-ln -s ~/.claude/cc-ship/agents/implementer.md ~/.claude/agents/implementer.md
-ln -s ~/.claude/cc-ship/skills/ship ~/.claude/skills/ship
-ln -s ~/.claude/cc-ship/skills/shipplan ~/.claude/skills/shipplan
+bash ~/.claude/cc-ship/install.sh
 
 # Update
 cd ~/.claude/cc-ship && git pull
 ```
 
-Symlinks mean `git pull` propagates changes instantly — no re-linking required.
+Symlinks mean `git pull` propagates changes instantly — no re-running the script required.
 
 ## Key design constraints
 
