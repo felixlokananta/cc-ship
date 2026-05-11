@@ -94,9 +94,13 @@ cc-ship/
 ├── agents/
 │   ├── planner.md       # Opus — reads codebase, writes .claude/plan.md
 │   └── implementer.md   # Haiku — executes .claude/plan.md, commits per step
-└── skills/
-    ├── ship/
-    │   └── SKILL.md     # /ship — plan + review + implement
-    └── shipplan/
-        └── SKILL.md     # /shipplan — plan + review only (no implementation)
+├── skills/
+│   ├── ship/
+│   │   └── SKILL.md     # /ship — plan + review + implement
+│   └── shipplan/
+│       └── SKILL.md     # /shipplan — plan + review only (no implementation)
+└── docs/
+    └── superpowers/
+        ├── specs/       # Design specs
+        └── plans/       # Implementation plans
 ```
