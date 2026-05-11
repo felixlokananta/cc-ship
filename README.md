@@ -44,18 +44,10 @@ Each agent runs in its own context window — planning context never bleeds into
 
 ```bash
 git clone https://github.com/YOUR_HANDLE/cc-ship.git ~/.claude/cc-ship
-
-# Create directories if they don't exist
-mkdir -p ~/.claude/agents ~/.claude/skills
-
-# Symlink agents and skills
-ln -s ~/.claude/cc-ship/agents/planner.md ~/.claude/agents/planner.md
-ln -s ~/.claude/cc-ship/agents/implementer.md ~/.claude/agents/implementer.md
-ln -s ~/.claude/cc-ship/skills/ship ~/.claude/skills/ship
-ln -s ~/.claude/cc-ship/skills/shipplan ~/.claude/skills/shipplan
+bash ~/.claude/cc-ship/install.sh
 ```
 
-Symlinks mean a `git pull` updates everything instantly.
+Symlinks mean `git pull` propagates changes instantly — no re-running the script required.
 
 ## Usage
 
@@ -91,6 +83,7 @@ cd ~/.claude/cc-ship && git pull
 ```
 cc-ship/
 ├── README.md
+├── install.sh
 ├── agents/
 │   ├── planner.md       # Opus — reads codebase, writes .claude/plan.md
 │   └── implementer.md   # Haiku — executes .claude/plan.md, commits per step
