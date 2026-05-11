@@ -37,9 +37,48 @@ Once approved, delegate to @implementer.
 
 The implementer will read `.claude/plan.md` and execute each step in order.
 
-## Step 4 — Done
+## Step 4 — Create Pull Request
 
-Once the implementer reports back, summarise:
+Once the implementer reports back:
+
+1. Push the branch to remote:
+   ```
+   git push -u origin HEAD
+   ```
+
+2. Build the PR title from the **Summary** line in `.claude/plan.md`.
+
+3. Build the PR body using this template, filling each section from the plan and the implementer's report:
+
+   ```
+   ## Summary
+   <plan's Summary section>
+
+   ## Changes
+   <implementer's ✅ completed steps>
+
+   ## Tests
+   <implementer's 🧪 section — what was written and whether it passes>
+
+   ## Follow-up
+   <implementer's 📝 section — omit this section if empty>
+
+   🤖 Generated with [Claude Code](https://claude.ai/claude-code) via /ship
+   ```
+
+4. Create the PR:
+   ```
+   gh pr create --title "<title>" --body "<body>"
+   ```
+
+5. Output the PR URL to the user.
+
+If `gh` is not available or there is no remote, skip PR creation and note it in the summary.
+
+## Step 5 — Done
+
+Summarise:
+- PR URL (or reason it was skipped)
 - What was implemented
 - Any tests written
 - Any follow-up items or known gaps
