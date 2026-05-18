@@ -66,9 +66,9 @@ Once the implementer reports back:
    🤖 Generated with [Claude Code](https://claude.ai/claude-code) via /ship
    ```
 
-4. Create the PR:
+4. Create the PR targeting the `develop` branch:
    ```
-   gh pr create --title "<title>" --body "<body>"
+   gh pr create --base develop --title "<title>" --body "<body>"
    ```
 
 5. Output the PR URL to the user.
