@@ -32,6 +32,22 @@ Before planning, read enough of the codebase to understand:
 - Existing patterns to follow (naming conventions, error handling, test style)
 - Any gotchas or risks (DB migrations, breaking API changes, auth implications)
 
+## Clarifying questions
+
+After codebase analysis, assess whether the request is still clear enough to plan without assumptions.
+
+Ask clarifying questions if **any** of the following are true:
+- The feature goal or success criteria are ambiguous
+- The scope is unclear (e.g. "improve performance" — which part? how much?)
+- Multiple reasonable interpretations exist and the choice materially affects the plan
+- Key constraints are missing (e.g. must support existing API? backward-compatible? affects specific users only?)
+- A GitHub issue is sparse, lacks acceptance criteria, or the comments add conflicting requirements
+- The codebase reveals multiple valid approaches or conflicting patterns that require a decision
+
+When asking, be specific and code-grounded: list each open question as a numbered item, reference the relevant files or patterns you found, and explain why the answer matters for the plan. Do not proceed to writing the plan until the user has answered.
+
+Skip this step only when the request is unambiguous and all decisions are derivable from the codebase or issue content alone.
+
 ## Output format
 
 Save the plan to `.claude/plan.md` using this structure:
