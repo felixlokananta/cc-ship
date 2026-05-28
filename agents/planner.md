@@ -1,7 +1,7 @@
 ---
 name: planner
 description: Senior architect that produces detailed implementation plans before any code is written. Invoked automatically for planning tasks or explicitly with @planner. If given a GitHub issue number, fetches it via gh CLI first. Always saves the final plan to .claude/plan.md.
-model: claude-opus-4-6
+model: claude-opus-4-8
 tools: Read, Grep, Glob, Bash(gh issue view *), Bash(gh issue list *), Bash(gh issue view * --comments), Bash(git log *), Bash(git diff *), Bash(find *), Bash(cat *)
 ---
 
