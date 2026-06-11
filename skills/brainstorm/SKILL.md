@@ -21,6 +21,14 @@ Ask questions one at a time to understand:
 - Constraints (technical, time, compatibility)
 - What success looks like — specific, observable outcomes
 
+**Use the `AskUserQuestion` tool for every clarifying question.** Supply 2–4 specific options that fit the context of the idea, with short descriptions. The tool always appends an "Other" option so the user can type a custom answer — you don't need to add one yourself.
+
+Example option shapes (adapt to the actual idea):
+- Who it's for → "End users", "Developers / CLI", "Internal tooling", "All of the above"
+- Urgency → "Blocking current work", "Nice to have", "Future milestone"
+- Scope → "Minimal MVP", "Full-featured", "Prototype to validate first"
+- Technical constraint → "Must stay client-side", "Can add a backend", "Needs to work offline"
+
 Ask only what you need. Stop when the picture is clear enough to write a structured summary.
 
 ## Step 3 — Scope check
@@ -124,9 +132,11 @@ Issue 2 of N — implement after **<Issue 1 title>** is merged.
 
 ## Step 5 — Issue prompt
 
-Once the summary is confirmed, ask:
+Once the summary is confirmed, use `AskUserQuestion` to ask:
 
 > "Create a GitHub issue from this?"
+
+Options: "Yes, create the issue(s)", "No, just show me the summary"
 
 - **Yes** → delegate to @issue-creator, passing the entire Markdown summary block verbatim
 - **No** → print the summary one final time so the user can copy it, then stop
