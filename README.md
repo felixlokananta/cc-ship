@@ -1,8 +1,8 @@
 <div align="center">
 
-# cc-ship
+<img src="assets/logo.svg" alt="cc-ship" width="600"/>
 
-**Think with Opus. Build with Haiku. Ship with `/ship`.**
+<br/>
 
 A Claude Code skill that orchestrates a brainstorm → plan → implement workflow using subagents.<br>
 Opus explores ideas and writes plans. You review. Haiku executes.

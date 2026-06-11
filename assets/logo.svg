@@ -1,0 +1,135 @@
+<svg width="600" height="165" viewBox="0 0 600 165" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0c1d"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="ship" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#6366f1" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#818cf8" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background card -->
+  <rect width="600" height="165" rx="16" fill="url(#bg)"/>
+
+  <!-- Subtle dot grid -->
+  <g opacity="0.08">
+    <circle cx="30" cy="30" r="1" fill="#818cf8"/>
+    <circle cx="60" cy="30" r="1" fill="#818cf8"/>
+    <circle cx="90" cy="30" r="1" fill="#818cf8"/>
+    <circle cx="120" cy="30" r="1" fill="#818cf8"/>
+    <circle cx="150" cy="30" r="1" fill="#818cf8"/>
+    <circle cx="30" cy="55" r="1" fill="#818cf8"/>
+    <circle cx="60" cy="55" r="1" fill="#818cf8"/>
+    <circle cx="90" cy="55" r="1" fill="#818cf8"/>
+    <circle cx="120" cy="55" r="1" fill="#818cf8"/>
+    <circle cx="150" cy="55" r="1" fill="#818cf8"/>
+    <circle cx="30" cy="80" r="1" fill="#818cf8"/>
+    <circle cx="60" cy="80" r="1" fill="#818cf8"/>
+    <circle cx="90" cy="80" r="1" fill="#818cf8"/>
+    <circle cx="120" cy="80" r="1" fill="#818cf8"/>
+    <circle cx="150" cy="80" r="1" fill="#818cf8"/>
+    <circle cx="30" cy="105" r="1" fill="#818cf8"/>
+    <circle cx="60" cy="105" r="1" fill="#818cf8"/>
+    <circle cx="90" cy="105" r="1" fill="#818cf8"/>
+    <circle cx="120" cy="105" r="1" fill="#818cf8"/>
+    <circle cx="150" cy="105" r="1" fill="#818cf8"/>
+    <circle cx="30" cy="130" r="1" fill="#818cf8"/>
+    <circle cx="60" cy="130" r="1" fill="#818cf8"/>
+    <circle cx="90" cy="130" r="1" fill="#818cf8"/>
+    <circle cx="120" cy="130" r="1" fill="#818cf8"/>
+    <circle cx="150" cy="130" r="1" fill="#818cf8"/>
+  </g>
+
+  <!-- ── Ship icon (centered x≈90, y≈75) ── -->
+
+  <!-- Smoke puffs -->
+  <circle cx="92" cy="18" r="5.5" fill="#4338ca" opacity="0.35"/>
+  <circle cx="98" cy="11" r="3.5" fill="#4338ca" opacity="0.2"/>
+
+  <!-- Funnel -->
+  <rect x="86" y="27" width="12" height="16" rx="2" fill="url(#ship)"/>
+  <!-- Funnel top band (yellow stripe) -->
+  <rect x="86" y="27" width="12" height="4" rx="2" fill="#fbbf24"/>
+
+  <!-- Bridge / wheelhouse -->
+  <rect x="68" y="43" width="38" height="18" rx="3" fill="url(#ship)"/>
+  <!-- Bridge windows -->
+  <rect x="73" y="47" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.85"/>
+  <rect x="85" y="47" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.85"/>
+  <rect x="97" y="47" width="4" height="7" rx="1" fill="#e0e7ff" opacity="0.5"/>
+
+  <!-- Main superstructure -->
+  <rect x="52" y="60" width="70" height="22" rx="3" fill="url(#ship)"/>
+  <!-- Superstructure windows row -->
+  <rect x="58" y="65" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.75"/>
+  <rect x="70" y="65" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.75"/>
+  <rect x="82" y="65" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.75"/>
+  <rect x="94" y="65" width="7" height="7" rx="1.5" fill="#e0e7ff" opacity="0.75"/>
+  <rect x="107" y="65" width="7" height="7" rx="1" fill="#e0e7ff" opacity="0.45"/>
+
+  <!-- Deck -->
+  <rect x="38" y="82" width="98" height="5" rx="1" fill="#c4b5fd" opacity="0.9"/>
+
+  <!-- Hull (trapezoid) -->
+  <path d="M25,112 L149,112 L140,87 L34,87 Z" fill="url(#ship)"/>
+  <!-- Hull highlight stripe -->
+  <path d="M35,90 L139,90 L141,96 L33,96 Z" fill="#a78bfa" opacity="0.3"/>
+
+  <!-- Waterline -->
+  <rect x="20" y="112" width="134" height="3" rx="1" fill="#4f46e5" opacity="0.6"/>
+
+  <!-- Waves -->
+  <path d="M12,122 Q28,115 44,122 Q60,129 76,122 Q92,115 108,122 Q124,129 140,122 Q156,115 172,122"
+        stroke="url(#wave1)" stroke-width="2.5" fill="none"/>
+  <path d="M18,132 Q34,126 50,132 Q66,138 82,132 Q98,126 114,132 Q130,138 146,132 Q162,126 178,132"
+        stroke="url(#wave1)" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Vertical divider -->
+  <line x1="192" y1="22" x2="192" y2="143" stroke="#312e81" stroke-width="1" opacity="0.8"/>
+
+  <!-- ── Text area ── -->
+
+  <!-- Main title -->
+  <text x="216" y="96"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+    font-size="58" font-weight="800" letter-spacing="-2"
+    fill="url(#title)">cc-ship</text>
+
+  <!-- Tagline -->
+  <text x="219" y="120"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+    font-size="15" letter-spacing="1" fill="#818cf8" opacity="0.9">
+    Think with Opus · Build with Haiku · Ship
+  </text>
+
+  <!-- Skill pills -->
+  <!-- /brainstorm -->
+  <rect x="218" y="133" width="96" height="22" rx="11" fill="#1e1b4b" stroke="#4338ca" stroke-width="1"/>
+  <text x="266" y="148" text-anchor="middle"
+    font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace"
+    font-size="11.5" fill="#a5b4fc">/brainstorm</text>
+
+  <!-- /ship -->
+  <rect x="322" y="133" width="56" height="22" rx="11" fill="#1e1b4b" stroke="#4338ca" stroke-width="1"/>
+  <text x="350" y="148" text-anchor="middle"
+    font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace"
+    font-size="11.5" fill="#a5b4fc">/ship</text>
+
+  <!-- /shipplan -->
+  <rect x="386" y="133" width="80" height="22" rx="11" fill="#1e1b4b" stroke="#4338ca" stroke-width="1"/>
+  <text x="426" y="148" text-anchor="middle"
+    font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace"
+    font-size="11.5" fill="#a5b4fc">/shipplan</text>
+</svg>
