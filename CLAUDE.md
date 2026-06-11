@@ -8,14 +8,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-Four files do all the work:
+Six files do all the work:
 
 | File | Role | Model |
 |------|------|-------|
+| `skills/brainstorm/SKILL.md` | `/brainstorm` — interactive dialogue, structured summary, delegates to `@issue-creator` | (inherits) |
 | `skills/ship/SKILL.md` | `/ship` — plan + review loop + implement | (inherits) |
 | `skills/shipplan/SKILL.md` | `/shipplan` — plan + review only, no implementation | (inherits) |
 | `agents/planner.md` | `@planner` — reads codebase, fetches GitHub issues, writes `.claude/plan.md` | Opus |
 | `agents/implementer.md` | `@implementer` — executes `.claude/plan.md` step by step, commits per step | Haiku |
+| `agents/issue-creator.md` | `@issue-creator` — detects repo, files GitHub issues from brainstorm summary | Haiku |
+
+**`/brainstorm` data flow:** `/brainstorm <idea>` → dialogue → structured summary → user confirms → `@issue-creator` files GitHub issues.
 
 **`/ship` data flow:** `/ship <request>` → `@planner` writes `.claude/plan.md` → user reviews (can iterate) → `@implementer` executes → `/ship` summarises.
 
