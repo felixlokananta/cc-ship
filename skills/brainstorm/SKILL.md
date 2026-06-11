@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 description: Interactive feature brainstorming session. Explores an idea through dialogue, produces a structured summary (splitting into multiple issues if the feature is too large), then optionally delegates to @issue-creator to file GitHub issues.
+model: claude-opus-4-8
 argument-hint: <feature idea (optional)>
 ---
 
@@ -36,6 +37,8 @@ If splitting, present the decomposition and let the user adjust before drafting 
 > Does this split make sense, or would you adjust it?"
 
 Wait for the user to confirm or modify the split before proceeding.
+
+If not splitting, say: "This fits in a single issue. Here's the summary:" then proceed directly to Step 4.
 
 ## Step 4 — Draft summary
 
@@ -73,30 +76,50 @@ Issue 1 of 1 — standalone.
 
 ### Summary format — multiple issues
 
-Repeat the block below for each issue, separated by `---`. Number them and include implementation order in each block.
+Repeat the block below for each issue, separated by `---`. Number them and include implementation order in each block. Use `##` section headers (same as the single-issue format) so `@issue-creator` can parse both formats identically.
 
 ```
 ## Issue 1 of N: <title>
 
-**Problem:** <what's broken or missing>
-**Proposed solution:** <what will be built>
-**Acceptance criteria:**
+## Problem
+<what's broken or missing>
+
+## Proposed solution
+<what will be built>
+
+## Acceptance criteria
 - [ ] <condition>
-**Implementation order:** Issue 1 of N — start here.
-**Out of scope:** <what this does NOT cover>
-**Labels:** <comma-separated — omit if none>
+
+## Implementation order
+Issue 1 of N — start here.
+
+## Out of scope
+<what this does NOT cover>
+
+## Labels
+<comma-separated — omit section if none>
 
 ---
 
 ## Issue 2 of N: <title>
 
-**Problem:** ...
-**Proposed solution:** ...
-**Acceptance criteria:**
+## Problem
+...
+
+## Proposed solution
+...
+
+## Acceptance criteria
 - [ ] ...
-**Implementation order:** Issue 2 of N — implement after **<Issue 1 title>** is merged.
-**Out of scope:** ...
-**Labels:** ...
+
+## Implementation order
+Issue 2 of N — implement after **<Issue 1 title>** is merged.
+
+## Out of scope
+...
+
+## Labels
+...
 ```
 
 ## Step 5 — Issue prompt
@@ -105,5 +128,5 @@ Once the summary is confirmed, ask:
 
 > "Create a GitHub issue from this?"
 
-- **Yes** → delegate to @issue-creator with the full confirmed summary text
+- **Yes** → delegate to @issue-creator, passing the entire Markdown summary block verbatim
 - **No** → print the summary one final time so the user can copy it, then stop

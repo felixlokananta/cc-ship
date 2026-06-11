@@ -64,6 +64,13 @@ Symlinks mean `git pull` propagates changes instantly — no re-running the scri
   - 🧪 Tests written and whether they pass (includes `make test` output summary)
   - 📝 Follow-up items for the next session
 
+### Issue creator
+- **Tool allowlist:** `Bash(git remote *)`, `Bash(find *)`, `Bash(gh issue create *)` — read-only git access (remote URL detection only), no write access to git history.
+- **Repo detection order:** `git remote get-url origin` in CWD → `find . -maxdepth 2 -name .git -type d` for sub-repos → ask user for `owner/repo`.
+- **Parse-then-file loop:** parses the full Markdown summary into issue blocks (one per `## Title` or `## Issue N of M:` header), then files them in order via `gh issue create --repo`.
+- **Error handling:** stops immediately if `gh issue create` exits non-zero; reports partial success and offers to retry remaining issues.
+- **gh fallback:** if `gh` is unavailable or unauthenticated, prints each issue body formatted for manual copy-paste instead of failing silently.
+
 ## Plan output location
 
 The planner always writes to `.claude/plan.md` **in the user's project**, not in this repo. That file is project-specific and ephemeral; it can be committed for a record but is not part of `cc-ship` itself.
@@ -71,4 +78,4 @@ The planner always writes to `.claude/plan.md` **in the user's project**, not in
 ## Requirements in the target environment
 
 - Claude Code v2.1+
-- GitHub CLI (`gh`) with `gh auth login` completed — only required when using `issue #N` references
+- GitHub CLI (`gh`) with `gh auth login` completed — required when using `issue #N` references with `/ship`/`/shipplan`, and when confirming issue creation at the end of `/brainstorm`
