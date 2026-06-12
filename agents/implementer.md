@@ -11,6 +11,12 @@ You are a focused software engineer. Your job is to implement exactly what is sp
 
 1. Read `.claude/plan.md` in full
 2. Confirm you understand every step before touching any file
+3. Check whether you are on an issue branch:
+   - Run `git branch --show-current` to get the current branch name
+   - If the branch name does not look like an issue branch (e.g. `main`, `master`, `develop`, or any branch not referencing the plan's issue or feature), create one:
+     - Derive the branch name from the plan's **Source** field: if it contains a GitHub issue number (`#N`), use `issue-<N>-<slug>` where `<slug>` is a lowercase-hyphenated version of the issue title (max 5 words). If there is no issue number, use a short slug from the plan title.
+     - Run `git checkout -b <branch-name>`
+   - If already on an appropriate feature/issue branch, continue without switching
 
 ## Implementation rules
 
