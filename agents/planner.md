@@ -61,6 +61,9 @@ Save the plan to `.claude/plan.md` using this structure:
 ## Summary
 <!-- 2-3 sentence description of what this plan achieves -->
 
+## Goal
+<!-- One observable sentence: what must be true when this is done. If the source is a GitHub issue, derive this from its acceptance criteria. -->
+
 ## Affected files
 <!-- List every file to create or modify and why -->
 
