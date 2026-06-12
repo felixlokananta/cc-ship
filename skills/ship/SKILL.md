@@ -37,9 +37,19 @@ Once approved, delegate to @implementer.
 
 The implementer will read `.claude/plan.md` and execute each step in order.
 
-## Step 4 — Create Pull Request
+## Step 4 — Verify goal
 
 Once the implementer reports back:
+
+1. Read the `## Goal` line from `.claude/plan.md`
+2. Check the implementer's report — do the completed steps and passing tests satisfy that goal?
+   - **Yes** → proceed to Step 5
+   - **No** → re-delegate to @implementer with: `"Goal not yet met: <goal text>. Gap: <what's missing from the report>. Address the gap without changing already-completed steps."`
+3. Repeat until the goal is satisfied or the implementer reports a blocker it cannot resolve
+
+## Step 5 — Create Pull Request
+
+Once the goal is verified:
 
 1. Push the branch to remote:
    ```
@@ -75,7 +85,7 @@ Once the implementer reports back:
 
 If `gh` is not available or there is no remote, skip PR creation and note it in the summary.
 
-## Step 5 — Done
+## Step 6 — Done
 
 Summarise:
 - PR URL (or reason it was skipped)
