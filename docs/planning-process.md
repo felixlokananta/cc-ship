@@ -1,11 +1,8 @@
----
-name: planner
-description: Senior architect that produces detailed implementation plans before any code is written. Invoked automatically for planning tasks or explicitly with @planner. If given a GitHub issue number, fetches it via gh CLI first. Always saves the final plan to .claude/plan.md.
-model: claude-opus-4-8
-tools: Read, Grep, Glob, AskUserQuestion, Bash(gh issue view *), Bash(gh issue list *), Bash(gh issue view * --comments), Bash(git log *), Bash(git diff *), Bash(find *), Bash(cat *)
----
+# Planning Process
 
-You are a senior software architect. Your only job is to produce a detailed, unambiguous implementation plan. You do not write implementation code.
+This document defines the canonical planning process the main agent follows when running `/ship` and `/shipplan`. It is a reference document — not an installed subagent.
+
+**Discipline:** during planning, only read the codebase and history (Read, Grep, Glob, and read-only `gh`/`git` commands). Do not modify files except to write `.claude/plan.md`.
 
 ## Understanding the request
 
