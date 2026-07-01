@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-`cc-ship` is a Claude Code skill that implements a **plan-then-implement** workflow using two subagents. It is not a runnable application — it is a configuration artifact (Markdown files) installed by symlinking into `~/.claude/`.
+`cc-ship` is a Claude Code skill that implements a **plan-then-implement** workflow. Planning runs in the main agent (including live clarifying questions); implementation is delegated to a subagent. It is not a runnable application — it is a configuration artifact (Markdown files) installed by symlinking into `~/.claude/`.
 
 ## Architecture
 
@@ -15,17 +15,17 @@ Six files do all the work:
 | `skills/brainstorm/SKILL.md` | `/brainstorm` — interactive dialogue, structured summary, delegates to `@issue-creator` | (inherits) |
 | `skills/ship/SKILL.md` | `/ship` — plan + review loop + implement | (inherits) |
 | `skills/shipplan/SKILL.md` | `/shipplan` — plan + review only, no implementation | (inherits) |
-| `agents/planner.md` | `@planner` — reads codebase, fetches GitHub issues, writes `.claude/plan.md` | Opus |
+| `docs/planning-process.md` | Canonical planning process (reference doc, followed by the main agent in `/ship` and `/shipplan`) | (not an agent) |
 | `agents/implementer.md` | `@implementer` — executes `.claude/plan.md` step by step, commits per step | Haiku |
 | `agents/issue-creator.md` | `@issue-creator` — detects repo, files GitHub issues from brainstorm summary | Haiku |
 
 **`/brainstorm` data flow:** `/brainstorm <idea>` → dialogue → structured summary → user confirms → `@issue-creator` files GitHub issues.
 
-**`/ship` data flow:** `/ship <request>` → `@planner` writes `.claude/plan.md` → user reviews (can iterate) → `@implementer` executes → `/ship` summarises.
+**`/ship` data flow:** `/ship <request>` → main agent plans (writes `.claude/plan.md`) → user reviews (can iterate) → main agent re-plans if needed → `@implementer` executes → `/ship` summarises.
 
-**`/shipplan` data flow:** `/shipplan <request>` → `@planner` writes `.claude/plan.md` → presents plan to user → stops. Run `/ship` when ready to implement.
+**`/shipplan` data flow:** `/shipplan <request>` → main agent plans (writes `.claude/plan.md`) → presents plan to user → stops. Run `/ship` when ready to implement.
 
-Each agent runs in its own context window so planning context never bleeds into implementation.
+Only implementation is isolated: the implementer reads `.claude/plan.md` fresh in its own context. Planning runs in the main agent and can include conversation history and live clarifying questions via `AskUserQuestion`.
 
 ## Install / update
 
@@ -42,17 +42,19 @@ Symlinks mean `git pull` propagates changes instantly — no re-running the scri
 
 ## Key design constraints
 
-- **Planner is read-only.** Its tool allowlist is scoped to: `Read`, `Grep`, `Glob`, `Bash(gh issue view *)`, `Bash(gh issue list *)`, `Bash(gh issue view * --comments)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(find *)`, `Bash(cat *)`. No write tools. The `git log` and `git diff` grants let it read change history and diffs, not just current file state.
+- **Planning is read-only by convention.** During planning, the main agent follows the discipline documented in `docs/planning-process.md`: only read the codebase and history via `Read`, `Grep`, `Glob`, and read-only `gh`/`git` commands. Do not modify files except to write `.claude/plan.md`. (Note: this is convention, not tool enforcement — the main agent has write tools.)
 - **Implementer is write-restricted.** Its Bash allowlist is `git *`, `find *`, `cat *`, `mkdir *`, `mv *`, `cp *`, `make *` — no arbitrary shell. It must execute the plan verbatim without re-planning or redesigning.
-- **Plan format is fixed.** `.claude/plan.md` must use the exact structure defined in `agents/planner.md` (Source, Summary, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not change this format without updating both the planner and the skill.
-- **Human review is a revision loop.** `/ship` and `/shipplan` both present the plan and wait for explicit `yes`. If the user describes changes, the skill re-delegates to `@planner` with the original request + feedback — revisions go through full codebase analysis, not free-form edits. Implementation never starts without an explicit `yes`.
+- **Plan format is fixed.** `.claude/plan.md` must use the exact structure defined in `docs/planning-process.md` (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not change this format without updating both the planning process and the skills.
+- **Human review is a revision loop.** `/ship` and `/shipplan` both present the plan and wait for explicit `yes`. If the user describes changes, the main agent re-runs the planning phase with the original request + feedback — revisions go through full codebase analysis, not free-form edits. Implementation never starts without an explicit `yes`.
 
 ## Agent behaviors
 
-### Planner
+### Planning phase
+- Runs in the main agent context (not a subagent) to enable live clarifying questions via `AskUserQuestion`.
 - Detects input type before doing anything: plain text → codebase analysis directly; `#N` → `gh issue view <N> --comments` then analysis; vague keyword → `gh issue list` to find the issue, confirm if ambiguous, then proceed as issue number.
 - Codebase analysis covers: directly affected files, indirectly affected files (imports, tests, migrations, config), existing patterns to match, and gotchas/risks.
-- Stops immediately after writing `.claude/plan.md` and confirms to the user. Does not continue past that point.
+- Asks clarifying questions via `AskUserQuestion` when ambiguous, offering 2–4 concrete options derived from codebase findings.
+- Writes `.claude/plan.md` in the fixed format and stops. Does not continue past that point. The main agent confirms the plan is ready for review.
 
 ### Implementer
 - **Pre-flight:** reads `.claude/plan.md` in full and confirms understanding of every step before touching any file.
