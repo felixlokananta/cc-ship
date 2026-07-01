@@ -1,6 +1,6 @@
 ---
 name: shipplan
-description: Plans a feature or GitHub issue without implementing it. Uses @planner (Opus) to analyse the codebase and write a detailed plan, then presents it for review. Accepts a feature description, issue number, or issue keyword. Use this when you want to review a plan before committing to implementation, or build a plan in one session and implement in another.
+description: Plans a feature or GitHub issue without implementing it. The main agent plans the work (following docs/planning-process.md, including live clarifying questions), then presents it for review. Accepts a feature description, issue number, or issue keyword. Use this when you want to review a plan before committing to implementation, or build a plan in one session and implement in another.
 argument-hint: <feature description or "issue #N">
 ---
 
@@ -8,10 +8,26 @@ Generate an implementation plan for: "$ARGUMENTS"
 
 ## Step 1 — Plan
 
-Delegate to @planner with the full request: "$ARGUMENTS"
+Follow `docs/planning-process.md` to produce `.claude/plan.md`.
 
-- The planner will detect the input type automatically (feature description, issue number, or keyword)
-- Wait until the planner confirms that `.claude/plan.md` has been written
+1. **Detect input type** (within "$ARGUMENTS")
+   - Plain text (feature description): go to codebase analysis
+   - Contains `#N` (GitHub issue): run `gh issue view <N> --comments` first, extract core requirement and acceptance criteria, then go to codebase analysis
+   - Vague keyword/title: run `gh issue list` to find the issue, ask user to confirm if ambiguous, then proceed as issue number path
+
+2. **Codebase analysis:** read enough of the codebase to understand which files are directly and indirectly affected, existing patterns to match, and any risks/gotchas
+
+3. **Clarifying questions:** assess whether the request is clear enough to plan without assumptions. If any of these are true, use `AskUserQuestion` to ask 2–4 concrete options (derived from codebase findings):
+   - Feature goal or success criteria are ambiguous
+   - Scope is unclear (e.g., "improve performance" — which part? how much?)
+   - Multiple reasonable interpretations exist
+   - Key constraints are missing
+   - GitHub issue is sparse or comments add conflicting requirements
+   - Codebase reveals multiple valid approaches
+   
+   Wait for the user to answer all questions before proceeding.
+
+4. **Write `.claude/plan.md`** in the fixed format (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not write any implementation code.
 
 ## Step 2 — Present
 

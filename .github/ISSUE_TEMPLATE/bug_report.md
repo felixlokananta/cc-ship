@@ -1,13 +1,13 @@
 ---
 name: Bug report
-about: Something in /ship, /shipplan, @planner, or @implementer isn't working
+about: Something in /ship, /shipplan, planning phase, or @implementer isn't working
 title: '[Bug] '
 labels: bug
 assignees: ''
 ---
 
 **Which skill or agent?**
-<!-- /ship, /shipplan, @planner, @implementer -->
+<!-- /ship, /shipplan, planning phase, @implementer -->
 
 **What did you run?**
 <!-- The exact prompt, e.g.: /ship add a hello-world function to utils.py -->

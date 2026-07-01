@@ -4,8 +4,8 @@
 
 <br/>
 
-A Claude Code skill that orchestrates a brainstorm → plan → implement workflow using subagents.<br>
-Opus explores ideas and writes plans. You review. Haiku executes.
+A Claude Code skill that orchestrates a brainstorm → plan → implement workflow.<br>
+The main agent plans (with live clarifying questions). You review. Haiku executes.
 
 </div>
 
@@ -20,7 +20,7 @@ Opus explores ideas and writes plans. You review. Haiku executes.
 </tr>
 <tr>
 <td><code>/ship</code></td>
-<td>Plan + review + implement. Opus analyses the codebase and writes <code>.claude/plan.md</code>. You approve. Haiku executes step by step and opens a PR.</td>
+<td>Plan + review + implement. The main agent plans the work (with live clarifying questions) and writes <code>.claude/plan.md</code>. You approve. Haiku executes step by step and opens a PR.</td>
 </tr>
 <tr>
 <td><code>/shipplan</code></td>
@@ -50,15 +50,16 @@ Opus explores ideas and writes plans. You review. Haiku executes.
        │                                      │                  │
        └──────────────┬───────────────────────┘                  │
                       ▼                                          │
-               @planner (Opus) ◄────────────────────────────────┘
-               • detects input type (description / issue # / keyword)
-               • fetches GitHub issue via gh CLI if needed
-               • reads the codebase
-               • writes .claude/plan.md
+         planning phase (main agent) ◄───────────────────────────┘
+         • detects input type (description / issue # / keyword)
+         • fetches GitHub issue via gh CLI if needed
+         • reads the codebase
+         • asks clarifying questions (live via AskUserQuestion)
+         • writes .claude/plan.md
                       │
                       ▼
                YOU review the plan
-               (request changes → @planner revises)
+               (request changes → main agent re-plans)
                       │
           ┌───────────┴────────────┐
       /ship only               /shipplan stops here
@@ -71,7 +72,7 @@ Opus explores ideas and writes plans. You review. Haiku executes.
     • opens a PR when done
 ```
 
-Each agent runs in its own context window — planning context never bleeds into implementation.
+Only implementation is isolated: the implementer runs in its own context window and reads .claude/plan.md fresh. Planning runs in the main agent and can include live clarifying questions.
 
 ---
 
@@ -112,7 +113,7 @@ cd ~/.claude/cc-ship && git pull
 # Plan + implement from a GitHub issue
 /ship issue #12
 
-# Plan + implement from a keyword (planner searches open issues)
+# Plan + implement from a keyword (searches open issues)
 /ship the auth bug
 
 # Plan only — review before deciding to implement
@@ -127,15 +128,16 @@ cd ~/.claude/cc-ship && git pull
 ```
 cc-ship/
 ├── install.sh
+├── docs/
+│   └── planning-process.md  # canonical planning process (followed by main agent)
 ├── agents/
-│   ├── planner.md        # Opus  — reads codebase, writes .claude/plan.md
-│   ├── implementer.md    # Haiku — executes .claude/plan.md, commits per step
-│   └── issue-creator.md  # Haiku — detects repo, files GitHub issues
+│   ├── implementer.md       # Haiku — executes .claude/plan.md, commits per step
+│   └── issue-creator.md     # Haiku — detects repo, files GitHub issues
 └── skills/
     ├── brainstorm/
-    │   └── SKILL.md      # /brainstorm — dialogue → summary → issues
+    │   └── SKILL.md         # /brainstorm — dialogue → summary → issues
     ├── ship/
-    │   └── SKILL.md      # /ship — plan + review + implement + PR
+    │   └── SKILL.md         # /ship — plan + review + implement + PR
     └── shipplan/
-        └── SKILL.md      # /shipplan — plan + review only
+        └── SKILL.md         # /shipplan — plan + review only
 ```
