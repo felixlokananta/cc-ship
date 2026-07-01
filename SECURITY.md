@@ -2,7 +2,7 @@
 
 ## Scope
 
-cc-ship is a prompt-only repository — it contains no running servers, no stored credentials, and no user data. The primary security concern is **prompt injection**: malicious content in a GitHub issue or codebase that causes `@planner` or `@implementer` to take unintended actions.
+cc-ship is a prompt-only repository — it contains no running servers, no stored credentials, and no user data. The primary security concern is **prompt injection**: malicious content in a GitHub issue or codebase that causes the planning phase or `@implementer` to take unintended actions.
 
 ## Supported versions
 

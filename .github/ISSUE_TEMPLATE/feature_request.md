@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest a change to how /ship, /shipplan, @planner, or @implementer behaves
+about: Suggest a change to how /ship, /shipplan, the planning phase, or @implementer behaves
 title: '[Feature] '
 labels: enhancement
 assignees: ''
