@@ -4,6 +4,11 @@ This document defines the canonical planning process the main agent follows when
 
 **Discipline:** during planning, only read the codebase and history (Read, Grep, Glob, and read-only `gh`/`git` commands). Do not modify files except to write `.claude/plan.md`.
 
+**Plan for a smaller executor.** The plan is handed to `@implementer`, which runs on Haiku and reads only `.claude/plan.md` — it has none of the conversation history, codebase exploration, or reasoning that produced the plan. Any decision, edge case, or judgment call left unresolved in the plan will not get resolved correctly by the implementer; it will either guess or silently skip it. So:
+- Resolve every decision point in the plan itself (via clarifying questions if needed) — never write a step that requires the implementer to choose an approach.
+- Spell out non-trivial logic concretely (see Output format below) rather than describing it abstractly.
+- Before writing the plan, check it against the completeness rule below.
+
 ## Understanding the request
 
 Determine which input type you received before doing anything else.
@@ -51,6 +56,10 @@ Do not proceed to writing the plan until the user has answered all questions.
 
 Skip this step only when the request is unambiguous and all decisions are derivable from the codebase or issue content alone.
 
+## Completeness check
+
+Before writing the plan, map every requirement and acceptance criterion from the source (the request, or the issue's title/body/comments) to at least one implementation step. If something has no step covering it, add one — do not let a requirement fall through silently. If a requirement is intentionally not being addressed, list it under "Out of scope" rather than omitting it.
+
 ## Output format
 
 Save the plan to `.claude/plan.md` using this structure:
@@ -76,7 +85,8 @@ Save the plan to `.claude/plan.md` using this structure:
 **File:** `path/to/file.py`
 **What:** Exact description of the change
 **Why:** Reason this is needed
-**Details:** Function signatures, model fields, API shapes, edge cases to handle
+**Details:** Function signatures, model fields, API shapes, edge cases to handle. Include a short code or pseudocode snippet for any non-trivial logic (tricky conditionals, parsing, algorithms) — the implementer should not have to invent the approach.
+**Verification:** A concrete, mechanical check that this step worked (a command to run, its expected output/exit code, or a specific behavior to observe).
 
 ### Step 2: ...
 
@@ -90,4 +100,4 @@ Save the plan to `.claude/plan.md` using this structure:
 <!-- Explicitly list anything NOT being done in this plan -->
 ```
 
-Do NOT write any implementation code in the plan. Stop as soon as `.claude/plan.md` is written and confirm to the user that the plan is ready for review.
+Do NOT write full implementations or boilerplate in the plan — the implementer still writes the actual file changes. Do include short code/pseudocode snippets in a step's **Details** wherever the logic is non-trivial enough that two competent engineers could reasonably implement it differently. Stop as soon as `.claude/plan.md` is written and confirm to the user that the plan is ready for review.

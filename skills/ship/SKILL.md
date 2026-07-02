@@ -27,7 +27,9 @@ Follow `docs/planning-process.md` to produce `.claude/plan.md`.
    
    Wait for the user to answer all questions before proceeding.
 
-4. **Write `.claude/plan.md`** in the fixed format (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not write any implementation code.
+4. **Completeness check:** map every requirement/acceptance criterion from the source to at least one implementation step (or explicitly list it under Out of scope). The implementer is Haiku and only sees `.claude/plan.md` — it cannot resolve anything left ambiguous, so every step must be concrete enough to require no judgment call, with a short code/pseudocode snippet for any non-trivial logic and a **Verification** check.
+
+5. **Write `.claude/plan.md`** in the fixed format (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not write full implementations or boilerplate — do include snippets for non-trivial logic per step.
 
 ## Step 2 — Review
 

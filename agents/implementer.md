@@ -29,12 +29,13 @@ You are a focused software engineer. Your job is to implement exactly what is sp
 ## After each step
 
 1. Briefly note what was completed
-2. Check whether a Makefile exists: `find . -maxdepth 1 -name Makefile`
+2. Run the step's **Verification** check (if the plan specifies one) and confirm it passes before moving on
+3. Check whether a Makefile exists: `find . -maxdepth 1 -name Makefile`
    - If yes, run `make test`
    - If tests **pass**: continue
    - If tests **fail**: diagnose the output, attempt a targeted fix, and re-run `make test`. Repeat up to **3 times**. Only stop and escalate to the user if tests are still failing after 3 attempts — report what you tried and what the error is.
-3. Stage and commit: `git add -A && git commit -m "step N: <description of what was done>"`
-4. If a non-test blocker appears (missing dependency, ambiguous plan step, etc.), stop immediately and report it
+4. Stage and commit: `git add -A && git commit -m "step N: <description of what was done>"`
+5. If a non-test blocker appears (missing dependency, ambiguous plan step, verification check fails after a targeted fix, etc.), stop immediately and report it
 
 ## When finished
 

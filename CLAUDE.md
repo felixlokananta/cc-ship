@@ -44,7 +44,8 @@ Symlinks mean `git pull` propagates changes instantly — no re-running the scri
 
 - **Planning is read-only by convention.** During planning, the main agent follows the discipline documented in `docs/planning-process.md`: only read the codebase and history via `Read`, `Grep`, `Glob`, and read-only `gh`/`git` commands. Do not modify files except to write `.claude/plan.md`. (Note: this is convention, not tool enforcement — the main agent has write tools.)
 - **Implementer is write-restricted.** Its Bash allowlist is `git *`, `find *`, `cat *`, `mkdir *`, `mv *`, `cp *`, `make *` — no arbitrary shell. It must execute the plan verbatim without re-planning or redesigning.
-- **Plan format is fixed.** `.claude/plan.md` must use the exact structure defined in `docs/planning-process.md` (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Do not change this format without updating both the planning process and the skills.
+- **Plan format is fixed.** `.claude/plan.md` must use the exact structure defined in `docs/planning-process.md` (Source, Summary, Goal, Affected files, Implementation steps, Tests to write, Risks and gotchas, Out of scope). Each implementation step includes a **Verification** check. Do not change this format without updating both the planning process and the skills.
+- **Plans must be self-contained for a smaller executor.** The implementer runs on Haiku and only sees `.claude/plan.md` — no conversation history or codebase exploration. Every decision point must be resolved in the plan itself (never left as a judgment call), and non-trivial logic gets a short code/pseudocode snippet in the step's Details. Plans may not contain full implementations/boilerplate, but targeted snippets for tricky logic are expected, not just prose.
 - **Human review is a revision loop.** `/ship` and `/shipplan` both present the plan and wait for explicit `yes`. If the user describes changes, the main agent re-runs the planning phase with the original request + feedback — revisions go through full codebase analysis, not free-form edits. Implementation never starts without an explicit `yes`.
 
 ## Agent behaviors
@@ -54,12 +55,13 @@ Symlinks mean `git pull` propagates changes instantly — no re-running the scri
 - Detects input type before doing anything: plain text → codebase analysis directly; `#N` → `gh issue view <N> --comments` then analysis; vague keyword → `gh issue list` to find the issue, confirm if ambiguous, then proceed as issue number.
 - Codebase analysis covers: directly affected files, indirectly affected files (imports, tests, migrations, config), existing patterns to match, and gotchas/risks.
 - Asks clarifying questions via `AskUserQuestion` when ambiguous, offering 2–4 concrete options derived from codebase findings.
+- **Completeness check:** before writing the plan, maps every requirement/acceptance criterion from the source to at least one implementation step (or lists it under Out of scope).
 - Writes `.claude/plan.md` in the fixed format and stops. Does not continue past that point. The main agent confirms the plan is ready for review.
 
 ### Implementer
 - **Pre-flight:** reads `.claude/plan.md` in full and confirms understanding of every step before touching any file.
 - **Ambiguity rule:** if a step is unclear, stops and asks rather than guessing.
-- **After each step:** checks for a Makefile (`find . -maxdepth 1 -name Makefile`), runs `make test` if present, then commits with `git add -A && git commit -m "step N: <description>"`. Stops immediately if tests fail or a blocker appears.
+- **After each step:** runs the step's Verification check if specified, checks for a Makefile (`find . -maxdepth 1 -name Makefile`), runs `make test` if present, then commits with `git add -A && git commit -m "step N: <description>"`. Stops immediately if the verification check fails, tests fail, or a blocker appears.
 - **Completion report format:**
   - ✅ Steps completed
   - ⚠️ Blockers or deviations from the plan (and why)
