@@ -133,11 +133,22 @@ cc-ship/
 ├── agents/
 │   ├── implementer.md       # Haiku — executes .claude/plan.md, commits per step
 │   └── issue-creator.md     # Haiku — detects repo, files GitHub issues
-└── skills/
-    ├── brainstorm/
-    │   └── SKILL.md         # /brainstorm — dialogue → summary → issues
-    ├── ship/
-    │   └── SKILL.md         # /ship — plan + review + implement + PR
-    └── shipplan/
-        └── SKILL.md         # /shipplan — plan + review only
+├── skills/
+│   ├── brainstorm/
+│   │   └── SKILL.md         # /brainstorm — dialogue → summary → issues
+│   ├── ship/
+│   │   └── SKILL.md         # /ship — plan + review + implement + PR
+│   └── shipplan/
+│       └── SKILL.md         # /shipplan — plan + review only
+└── pi/                      # port of /ship to the Pi coding agent (see below)
+```
+
+---
+
+## Pi port
+
+`pi/` ports the `/ship` plan-then-implement workflow to the [Pi coding agent](https://github.com/earendil-works/pi). It contains the `/ship` prompt template (`pi/prompts/ship.md`), the implementer agent definition (`pi/agents/implementer.md`), and vendored `question`/`subagent` extensions from Pi's examples (`pi/extensions/`). The plan is written to `.pi/plan.md` instead of `.claude/plan.md`.
+
+```bash
+bash ~/.claude/cc-ship/pi/install.sh   # symlinks the pi files into ~/.pi/agent
 ```
