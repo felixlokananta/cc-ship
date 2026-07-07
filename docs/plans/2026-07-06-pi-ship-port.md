@@ -155,8 +155,8 @@ git commit -m "feat(pi): add implementer agent definition"
 
 `````markdown
 ---
-description: Plan-then-implement workflow — plan with clarifying questions, pause for human review, delegate to the implementer subagent, verify, open a PR. Accepts a feature description or a GitHub issue reference like "issue #12".
-argument-hint: <feature description or "issue #N">
+description: 'Plan-then-implement workflow — plan with clarifying questions, pause for human review, delegate to the implementer subagent, verify, open a PR. Accepts a feature description or a GitHub issue reference like "issue #12".'
+argument-hint: '<feature description or "issue #N">'
 ---
 
 Orchestrate a plan-then-implement workflow for: "$@"
