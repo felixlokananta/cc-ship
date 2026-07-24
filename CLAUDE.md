@@ -27,6 +27,10 @@ Six files do all the work:
 
 Only implementation is isolated: the implementer reads `.claude/plan.md` fresh in its own context. Planning runs in the main agent and can include conversation history and live clarifying questions via `AskUserQuestion`.
 
+## Pi port (`pi/`)
+
+`pi/` is a port of the `/ship` workflow to the Pi coding agent, kept separate from the Claude Code files above. `pi/prompts/ship.md` is the `/ship` prompt template (plans to `.pi/plan.md`), `pi/agents/implementer.md` is the implementer agent (write restrictions expressed in prose — Pi has no per-tool allowlists), and `pi/extensions/` vendors the `question` and `subagent` extensions verbatim from Pi's examples (do not hand-edit; re-vendor from upstream). `pi/install.sh` symlinks these into `~/.pi/agent`. The design doc is `docs/design/2026-07-06-pi-ship-port-design.md`.
+
 ## Install / update
 
 ```bash
