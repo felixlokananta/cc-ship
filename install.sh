@@ -9,7 +9,7 @@ mkdir -p ~/.claude/agents ~/.claude/skills
 [ -L ~/.claude/agents/planner.md ] && rm -f ~/.claude/agents/planner.md
 
 # Remove self-referential symlinks prior installs left inside the repo (ln -sf without -n dereferenced the existing skill links)
-for skill in ship shipplan brainstorm; do
+for skill in ship shipplan brainstorm scope; do
   [ -L "$REPO_DIR/skills/$skill/$skill" ] && rm -f "$REPO_DIR/skills/$skill/$skill"
 done
 
@@ -19,5 +19,6 @@ ln -sfn "$REPO_DIR/agents/issue-creator.md" ~/.claude/agents/issue-creator.md
 ln -sfn "$REPO_DIR/skills/ship"             ~/.claude/skills/ship
 ln -sfn "$REPO_DIR/skills/shipplan"         ~/.claude/skills/shipplan
 ln -sfn "$REPO_DIR/skills/brainstorm"       ~/.claude/skills/brainstorm
+ln -sfn "$REPO_DIR/skills/scope"            ~/.claude/skills/scope
 
 echo "cc-ship installed from $REPO_DIR"
