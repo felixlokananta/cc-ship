@@ -1,7 +1,7 @@
 ---
 name: brainstorm
 description: Interactive feature brainstorming session. Explores an idea through dialogue, produces a structured summary (splitting into multiple parts if the feature is too large), then captures it as a GitHub issue or as a phase in docs/plans/implementation-plan.md.
-model: claude-opus-4-8
+model: claude-opus-5-5
 argument-hint: <feature idea (optional)>
 ---
 
