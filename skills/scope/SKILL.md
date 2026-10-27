@@ -9,7 +9,7 @@ description: Use when breaking a phase from docs/plans/implementation-plan.md in
 
 Turn one phase of `docs/plans/implementation-plan.md` into a folder of numbered task docs under `docs/plans/tasks/phaseN/`, each small and complete enough for **Hermes**, a smaller local model, to execute without designing anything.
 
-**Core principle:** Hermes transcribes and wires. It does not design, guess API shapes, or make architectural calls. Every decision is made here, at scope time.
+**Core principle:** Hermes implements; it does not decide. It does not design, guess API shapes, or make architectural calls. Every decision is made here, at scope time — but a task is **decision-complete, not code-complete**. You write down every decision, and code only where Hermes could get it wrong without any check catching it (see "Decisions, Not Implementations" below).
 
 This works the same in every ChurchUp repo (`churchup-api`, `churchup-ui`, `churchup-landing`, `churchup-mobile`) — same plan/task-folder convention, same Hermes executor, same discipline. What differs per repo is *which engineer skill Hermes loads* and *where the real contract lives* — both covered in the Process below.
 
@@ -90,7 +90,8 @@ One file per task: `docs/plans/tasks/phaseN/task-N0M-short-slug.md`, with these 
 | `# Task N0M: Title` | — |
 | `## Goal` | 1–3 sentences. What exists at the end. |
 | `## Prerequisites` | Which tasks/phases must be done, plus `Load skill: skill_view(name='<engineer skill>')` — see table below for which skill |
-| `## Tasks` | Numbered steps, each with the **complete, copy-pasteable code** for the file |
+| `## Tasks` | Numbered steps. Each names the file, the existing file to mirror, the exact exports/signatures, and the behavior — plus code **only** for the cases listed under "Decisions, Not Implementations" |
+| `## Tests` | Test file path, the existing test to mirror, and a case table (case / input or setup / expected). Full test code only for mocking setup the repo has no example of |
 | `## Acceptance Criteria` | Numbered, checkable. Always includes this repo's typecheck/lint/test commands — check its `CLAUDE.md` Quick Reference section rather than assuming a toolchain. |
 | `## Notes` | Gotchas, conventions, and anything to verify against the owning repo |
 
@@ -107,9 +108,37 @@ Which engineer skill Hermes loads depends on which repo you're scoping:
 
 Contains: the "already done in earlier phases — do not rebuild" callout, the task table (Task / Name / Depends On / Est. Effort), the "one task per work session" rule, and phase completion criteria.
 
-## Give Code, Not Specifications
+## Decisions, Not Implementations
 
-This is what makes a task digestible for a small model. The principle holds regardless of language — Python, TypeScript, whatever the repo uses.
+A small model fails in two ways: it **designs badly** when left to make choices, and it **guesses** when it lacks a fact. Both are fixed by writing down decisions and facts — not by writing the whole file. If you are writing every line, you are doing Hermes's job at Opus prices, and the task doc becomes a slower copy of code you could have committed yourself.
+
+**Do not prototype the implementation** — no scratchpad drafts, no "write it all to be sure, then cut it down." The urge to write the whole file means a decision is still unresolved. Name the decision, resolve it, and write that down.
+
+### Always specify (prose, no code needed)
+
+- **File path** and whether it is new, a replacement, or a targeted edit
+- **A pattern file to mirror** — an existing file in this repo with the same shape (`Mirror app/(tabs)/events.tsx for layout, loading and error states`). This is the biggest lever: small models copy an in-repo example far more reliably than they follow a description.
+- **Exact names**: exports, function signatures, prop/type names, query keys, route paths, test IDs
+- **Which existing helpers/components to use** (by import path), and which not to reinvent
+- **Exact user-facing strings** where they matter (labels, error messages, empty states)
+- **Behavior checklist**: each state and what the user sees (loading, empty, error, success, per role)
+
+### Give code only for these
+
+Code goes in when Hermes could get it wrong **and typecheck, lint, and tests would not catch it** — or when there is no in-repo pattern to mirror:
+
+1. **Contract boundaries** — types/interfaces mirroring a real payload, and service/API functions (method, URL, request body, response envelope, field names). Transcribed from the owning repo, never invented.
+2. **Non-obvious logic** — role-based branching, data transforms, date/timezone handling, async ordering, cache invalidation, anything two competent engineers would write differently.
+3. **No precedent** — the first use of a library or pattern in this repo. Give one short complete example; later tasks mirror it.
+4. **Test mocking setup** the repo has no example of.
+
+Keep each snippet to the tricky part — the function, the branch, the type — not the surrounding file.
+
+### Never give code for
+
+- Layout, markup/JSX structure, and styling that follow an existing screen/component
+- Boilerplate that mirrors a pattern file (imports, wiring, component shells, CRUD views)
+- Tests whose structure mirrors an existing test file — give the case table instead
 
 <Bad>
 ```markdown
@@ -117,24 +146,43 @@ This is what makes a task digestible for a small model. The principle holds rega
 Build a screen with email and password inputs, validation, a loading
 state, error display, and navigation to the dashboard on success.
 ```
+Every decision punted to Hermes: which inputs component, what validation, what the error says, where "dashboard" is.
+</Bad>
+
+<Bad>
+````markdown
+### 2. Replace `app/(auth)/login.tsx`
+
+```tsx
+// 140 lines: every import, every View, every style, every handler
+```
+````
+Opus wrote the implementation. Hermes is now a copy-paste step.
 </Bad>
 
 <Good>
 ````markdown
 ### 2. Replace `app/(auth)/login.tsx`
 
-```tsx
-export default function LoginScreen() {
-  const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  // ...every line Hermes needs, complete and runnable
-}
-```
+Mirror `app/(auth)/register.tsx` for layout, `KeyboardAvoidingView`, and
+the loading/error pattern. Use `TextField` and `PrimaryButton` from
+`components/ui/` (task 201). Default export `LoginScreen`.
+
+- Fields: email (`autoCapitalize="none"`, `keyboardType="email-address"`), password (`secureTextEntry`)
+- Submit disabled until both fields are non-empty
+- On submit: call `login(email, password)` from `useAuth()`; on success `router.replace("/(tabs)")`
+- Error text: show `getErrorMessage(err)` from `lib/errors.ts` under the button; clear it when either field changes
+
+Non-obvious: the API returns 400 (not 401) for bad credentials, with the
+message under `non_field_errors`. `getErrorMessage` already handles that —
+do not parse the error yourself.
 ````
+Every decision made, every fact given, no boilerplate.
 </Good>
 
-Write the test code out in full too. Hermes should be able to create the files, run the repo's typecheck/test commands, and be done.
+### The self-check
+
+For each task, ask: **"Is there any choice left for Hermes to make, or any fact it would have to guess?"** If yes, resolve it in the doc. Then ask: **"Is any of this code something Hermes could produce correctly by mirroring the pattern file?"** If yes, delete the code and point at the pattern file.
 
 ## Never Guess a Contract — Go Read It
 
@@ -155,7 +203,9 @@ Only when the owning repo genuinely cannot answer (endpoint doesn't exist yet, b
 | "I've got the response shape; that's the contract" | You're half done. Read `permission_classes` too — it may 403 for regular members. |
 | "I'm not sure of the field names, I'll pick something sensible" | Never guess. Hermes will ship your guess with total confidence. |
 | "The plan lists it, so it's a task" | Check the filesystem first. Earlier phases overshoot. |
-| "I'll describe the component and let Hermes write it" | Small models design badly. Give complete code. |
+| "I'll describe the component and let Hermes write it" | A vague description leaves design choices open. Name the pattern file, exact names, and every state. |
+| "I'll write the whole file in the scratchpad first to be safe" | That's the implementation, at Opus prices. Find the unresolved decision and write that down instead. |
+| "I'll give complete code so Hermes can't get it wrong" | Code only for contracts, tricky logic, and things with no in-repo precedent. Everything else mirrors a pattern file. |
 | "These two tasks are small, I'll merge them" | Merging inflates per-task context. Keep them separate. |
 | "I'll skim the previous phase's task docs for current state" | Docs are intent. Read the committed files. |
 | "The phase is big, I'll write 12 tasks" | The phase is too big — re-read it; much is likely already built. |
@@ -166,6 +216,8 @@ Only when the owning repo genuinely cannot answer (endpoint doesn't exist yet, b
 - **Trusting the plan's contract list as ground truth** — the single most expensive mistake. It produces tasks that compile, pass their mocked tests, and 403 in production. Read the real view/serializer.
 - **Checking the payload but not the permissions** — half a contract. An admin/leader-only permission class means regular users get nothing.
 - **Scoping from the plan alone** — produces tasks that rebuild existing code. Always diff plan against filesystem.
+- **Writing the implementation into the task** — full files, layouts, boilerplate. Opus does Hermes's work, then pays again to write it out as a doc. Give decisions, pattern files, and targeted snippets.
+- **No pattern file** — a task without "mirror X" forces Hermes to invent structure. Always name the closest existing file; if none exists, that's the one place for a short complete example.
 - **Vague acceptance criteria** ("login works") — Hermes cannot self-check. Use commands and observable behavior.
 - **Forgetting the "already done" callout** — Hermes will happily overwrite an earlier phase's tested code.
 - **Inconsistent numbering across phases** — breaks Kanban uniqueness. Phase-prefix every task ID.
